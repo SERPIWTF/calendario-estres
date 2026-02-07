@@ -1,0 +1,86 @@
+body {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.calendario-card {
+    background: white;
+    width: 380px;
+    border-radius: 30px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-nav {
+    background: #f3e5f5;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    color: #6a1b9a;
+}
+
+.dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    color: #b39ddb;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+.grid-calendario {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.dia {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: 0.2s;
+}
+
+/* Colores de estrés */
+.estres-bajo { background-color: #c8e6c9 !important; }
+.estres-medio { background-color: #fff9c4 !important; }
+.estres-alto { background-color: #ffccbc !important; }
+.estres-critico { background-color: #ffcdd2 !important; }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    width: 280px;
+    margin: 20% auto;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.btn-save { background: #a18cd1; color: white; border: none; padding: 10px 20px; border-radius: 15px; cursor: pointer; }
+.btn-cancel { background: #eee; border: none; padding: 10px 20px; border-radius: 15px; margin-left: 5px; cursor: pointer; }

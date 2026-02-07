@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Calendario de Estrés</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="calendario-card">
+        <div class="header">
+            <h2 id="mes-nombre"></h2> 
+            <div class="nav">
+                <button class="btn-nav" onclick="cambiarMes(-1)">◀</button>
+                <button class="btn-nav" onclick="cambiarMes(1)">▶</button>
+            </div>
+        </div>
+        
+        <div class="dias-semana">
+            <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+        </div>
+
+        <div id="calendario" class="grid-calendario"></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3>Registro de Estrés</h3>
+            <p id="fecha-label" style="color: #6a1b9a; font-weight: bold;"></p>
+            
+            <label for="nivel-estres">¿Cómo te sientes hoy?</label>
+            <select id="nivel-estres">
+                <option value="bajo">Muy bien (Verde) 😊</option>
+                <option value="medio">Un poco tenso (Amarillo) 😐</option>
+                <option value="alto">Estresado (Naranja) 😰</option>
+                <option value="critico">Muy Estresado (Rojo) 🌋</option>
+            </select>
+
+            <div class="modal-buttons">
+                <button onclick="guardarEstado()" class="btn-save">Guardar</button>
+                <button onclick="cerrarModal()" class="btn-cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
