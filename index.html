@@ -5,110 +5,338 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diario & Calendario de Ánimo 🌸</title>
     
-    <!-- Fuente Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     
-    <!-- Conexión con los estilos -->
-    <link rel="stylesheet" href="estilos.css">
+    <style>
+        :root {
+            --fondo-gradiente: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --texto: #6a1b9a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--fondo-gradiente);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            padding: 15px;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        #sakura-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
+        .sakura {
+            position: absolute; background-color: #ffc0cb;
+            border-radius: 100% 0 100% 100%; opacity: 0.7;
+            animation: fall linear infinite, sway ease-in-out infinite alternate;
+        }
+
+        @keyframes fall {
+            0% { top: -10%; transform: rotate(0deg); }
+            100% { top: 110%; transform: rotate(360deg); }
+        }
+
+        @keyframes sway {
+            from { margin-left: 0px; }
+            to { margin-left: 40px; }
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px; /* Estilo enfocado a móvil como en tu foto */
+            z-index: 2;
+        }
+
+        .calendario-card, .stats-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h2 { color: var(--texto); font-size: 1.6rem; }
+
+        .btn-nav {
+            border: none; background: white; padding: 5px 12px;
+            border-radius: 10px; cursor: pointer; color: var(--texto);
+            font-size: 1.2rem;
+        }
+
+        .dias-semana, .grid-calendario {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            text-align: center; gap: 8px;
+        }
+
+        .dias-semana div { font-size: 0.8rem; color: #777; font-weight: 600; }
+
+        .dia {
+            aspect-ratio: 1; background: rgba(255,255,255,0.5);
+            border-radius: 12px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer; font-weight: bold; font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .estres-bajo { background-color: #c8e6c9 !important; }
+        .estres-medio { background-color: #fff9c4 !important; }
+        .estres-alto { background-color: #ffccbc !important; }
+        .estres-critico { background-color: #ffcdd2 !important; }
+
+        .stats-card h3 { text-align: center; color: var(--texto); margin-bottom: 15px; font-size: 1.1rem; }
+        .stats-grid { display: flex; justify-content: space-around; text-align: center; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-emoji { font-size: 1.4rem; }
+        .stat-num { font-weight: bold; font-size: 1rem; }
+        .stat-label { font-size: 0.7rem; color: #666; }
+
+        /* DIARIO ESTILO LIBRETA REALISTA */
+        .diario-card {
+            background: #fff;
+            min-height: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            background-image: 
+                linear-gradient(90deg, transparent 39px, #ff8a80 40px, transparent 41px),
+                linear-gradient(#e1f5fe 1px, transparent 1px);
+            background-size: 100% 100%, 100% 30px;
+            padding: 40px 20px 20px 60px;
+            font-family: 'Patrick Hand', cursive;
+        }
+
+        .diario-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+        }
+
+        .diario-header h2 { font-size: 1.8rem; color: #444; }
+
+        #nota-texto {
+            width: 100%; min-height: 180px; background: transparent;
+            border: 2px dashed #ccc; border-radius: 10px;
+            padding: 15px; font-family: inherit; font-size: 1.4rem;
+            line-height: 30px; outline: none; resize: none;
+        }
+
+        .btn-container { text-align: right; margin-top: 15px; }
+        .btn-nota {
+            background: #f48fb1; color: white; border: none;
+            padding: 10px 25px; border-radius: 20px; cursor: pointer;
+            font-family: inherit; font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(244, 143, 177, 0.4);
+        }
+
+        .nota-item {
+            background: rgba(255,255,255,0.8); border-left: 4px solid #f48fb1;
+            padding: 10px; margin-top: 15px; border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 1.2rem;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4); z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 20px;
+            width: 85%; max-width: 300px; text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Contenedor para los pétalos cayendo -->
     <div id="sakura-container"></div>
 
     <div class="main-container">
-        
-        <!-- COLUMNA IZQUIERDA: CALENDARIO Y ESTADÍSTICAS -->
-        <div class="columna-izquierda">
-            
-            <!-- Calendario -->
-            <div class="calendario-card">
-                <div class="header">
-                    <h2 id="mes-nombre">Cargando...</h2>
-                    <div>
-                        <button class="btn-nav" onclick="cambiarMes(-1)">◀</button>
-                        <button class="btn-nav" onclick="cambiarMes(1)">▶</button>
-                    </div>
-                </div>
-
-                <div class="dias-semana">
-                    <div>Dom</div><div>Lun</div><div>Mar</div>
-                    <div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
-                </div>
-
-                <div id="calendario" class="grid-calendario"></div>
-            </div>
-
-            <!-- Estadísticas -->
-            <div class="stats-card">
-                <h3>Resumen Mensual 🌸</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-emoji">😊</span>
-                        <span id="count-bajo" class="stat-num">0</span>
-                        <span class="stat-label">Bien</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-emoji">😐</span>
-                        <span id="count-medio" class="stat-num">0</span>
-                        <span class="stat-label">Tenso</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-emoji">😟</span>
-                        <span id="count-alto" class="stat-num">0</span>
-                        <span class="stat-label">Estrés</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-emoji">😫</span>
-                        <span id="count-critico" class="stat-num">0</span>
-                        <span class="stat-label">Crítico</span>
-                    </div>
+        <div class="calendario-card">
+            <div class="header">
+                <h2 id="mes-nombre">Febrero 2026</h2>
+                <div>
+                    <button class="btn-nav" onclick="cambiarMes(-1)">◀</button>
+                    <button class="btn-nav" onclick="cambiarMes(1)">▶</button>
                 </div>
             </div>
-
+            <div class="dias-semana">
+                <div>Dom</div><div>Lun</div><div>Mar</div><div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+            </div>
+            <div id="calendario" class="grid-calendario"></div>
         </div>
 
-        <!-- COLUMNA DERECHA: DIARIO (Aspecto de Libreta) -->
-        <div class="diario-card">
-            <h3>📓 Mi Diario Personal</h3>
-            
-            <div class="input-grupo">
-                <textarea id="nota-texto" placeholder="¿Cómo te sientes hoy? Escribe tus pensamientos aquí..."></textarea>
+        <div class="stats-card">
+            <h3>Resumen Mensual 🌸</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-emoji">😊</span>
+                    <span id="count-bajo" class="stat-num">0</span>
+                    <span class="stat-label">Bien</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-emoji">😐</span>
+                    <span id="count-medio" class="stat-num">0</span>
+                    <span class="stat-label">Tenso</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-emoji">😟</span>
+                    <span id="count-alto" class="stat-num">0</span>
+                    <span class="stat-label">Estrés</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-emoji">😫</span>
+                    <span id="count-critico" class="stat-num">0</span>
+                    <span class="stat-label">Crítico</span>
+                </div>
             </div>
-            
-            <div style="text-align: right; margin-top: 10px;">
+        </div>
+
+        <div class="diario-card">
+            <div class="diario-header">
+                <span style="font-size: 2rem;">📓</span>
+                <h2>Mi Diario Personal</h2>
+            </div>
+            <textarea id="nota-texto" placeholder="¿Cómo te sientes hoy? Escribe tus pensamientos aquí..."></textarea>
+            <div class="btn-container">
                 <button class="btn-nota" onclick="guardarNota()">Guardar Hoja</button>
             </div>
-
-            <div id="contenedor-notas" class="notas-listado">
-                <!-- Aquí aparecen las notas -->
-            </div>
+            <div id="contenedor-notas"></div>
         </div>
-
     </div>
 
-    <!-- MODAL PARA ELEGIR EL ÁNIMO -->
     <div id="modal" class="modal">
         <div class="modal-content">
-            <h3 id="fecha-label">Fecha</h3>
-            <p>¿Cómo estuvo tu día?</p>
-            
-            <select id="nivel-estres" style="width: 100%; padding: 10px; margin: 15px 0; border-radius: 8px;">
-                <option value="bajo">😊 Bien / Relajado</option>
-                <option value="medio">😐 Algo Tenso</option>
+            <h3 id="fecha-label">Día</h3>
+            <select id="nivel-estres" style="width:100%; padding:10px; margin:15px 0; border-radius:10px;">
+                <option value="bajo">😊 Bien</option>
+                <option value="medio">😐 Tenso</option>
                 <option value="alto">😟 Estresado</option>
                 <option value="critico">😫 Crítico</option>
             </select>
-            
-            <div>
-                <button class="btn-save" onclick="guardarEstado()">Guardar</button>
-                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-            </div>
+            <button onclick="guardarEstado()" style="background:#7e57c2; color:white; border:none; padding:10px 20px; border-radius:10px;">Guardar</button>
+            <button onclick="cerrarModal()" style="background:#eee; border:none; padding:10px 20px; border-radius:10px; margin-left:5px;">Cerrar</button>
         </div>
     </div>
 
-    <!-- Conexión con la lógica -->
-    <script src="script.js"></script>
+    <script>
+        const calendario = document.getElementById("calendario");
+        const nombreMesElemento = document.getElementById("mes-nombre");
+        const modal = document.getElementById("modal");
+        let fechaActual = new Date();
+        let idSeleccionado = null;
+        let elementoSeleccionado = null;
 
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        function renderizarCalendario() {
+            calendario.innerHTML = "";
+            const mes = fechaActual.getMonth();
+            const año = fechaActual.getFullYear();
+            nombreMesElemento.textContent = `${meses[mes]} ${año}`;
+
+            const primerDia = new Date(año, mes, 1).getDay();
+            const totalDias = new Date(año, mes + 1, 0).getDate();
+
+            for (let i = 0; i < primerDia; i++) {
+                const vacio = document.createElement("div");
+                calendario.appendChild(vacio);
+            }
+
+            const datos = JSON.parse(localStorage.getItem("estresCalendario")) || {};
+
+            for (let d = 1; d <= totalDias; d++) {
+                const dia = document.createElement("div");
+                dia.className = "dia";
+                const idFecha = `${d}-${mes}-${año}`;
+                dia.innerHTML = `<span>${d}</span><span style="font-size:1.2rem">${datos[idFecha]?.emoji || ''}</span>`;
+                if (datos[idFecha]) dia.classList.add(`estres-${datos[idFecha].nivel}`);
+                
+                dia.onclick = () => {
+                    idSeleccionado = idFecha;
+                    elementoSeleccionado = dia;
+                    document.getElementById("fecha-label").textContent = `${d} de ${meses[mes]}`;
+                    modal.style.display = "flex";
+                };
+                calendario.appendChild(dia);
+            }
+        }
+
+        function guardarEstado() {
+            const nivel = document.getElementById("nivel-estres").value;
+            const emojis = { bajo: "😊", medio: "😐", alto: "😟", critico: "😫" };
+            const datos = JSON.parse(localStorage.getItem("estresCalendario")) || {};
+            datos[idSeleccionado] = { nivel, emoji: emojis[nivel] };
+            localStorage.setItem("estresCalendario", JSON.stringify(datos));
+            renderizarCalendario();
+            actualizarEstadisticas();
+            cerrarModal();
+        }
+
+        function actualizarEstadisticas() {
+            const datos = JSON.parse(localStorage.getItem('estresCalendario')) || {};
+            let c = { bajo: 0, medio: 0, alto: 0, critico: 0 };
+            Object.values(datos).forEach(i => c[i.nivel]++);
+            document.getElementById("count-bajo").textContent = c.bajo;
+            document.getElementById("count-medio").textContent = c.medio;
+            document.getElementById("count-alto").textContent = c.alto;
+            document.getElementById("count-critico").textContent = c.critico;
+        }
+
+        function cambiarMes(dir) { fechaActual.setMonth(fechaActual.getMonth() + dir); renderizarCalendario(); }
+        function cerrarModal() { modal.style.display = "none"; }
+
+        function guardarNota() {
+            const txt = document.getElementById('nota-texto');
+            if (!txt.value.trim()) return;
+            const nota = { id: Date.now(), texto: txt.value, fecha: new Date().toLocaleString('es-MX', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) };
+            let notas = JSON.parse(localStorage.getItem('misNotas')) || [];
+            notas.unshift(nota);
+            localStorage.setItem('misNotas', JSON.stringify(notas));
+            txt.value = ""; renderizarNotas();
+        }
+
+        function renderizarNotas() {
+            const notas = JSON.parse(localStorage.getItem('misNotas')) || [];
+            document.getElementById('contenedor-notas').innerHTML = notas.map(n => `
+                <div class="nota-item">
+                    <small style="color:#ff8a80; font-weight:bold;">● ${n.fecha}</small>
+                    <p>${n.texto}</p>
+                </div>
+            `).join('');
+        }
+
+        function crearSakura() {
+            const container = document.getElementById("sakura-container");
+            for (let i = 0; i < 15; i++) {
+                const p = document.createElement("div");
+                p.className = "sakura";
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.width = p.style.height = (Math.random() * 8 + 6) + "px";
+                p.style.animationDuration = (Math.random() * 5 + 5) + "s";
+                p.style.animationDelay = (Math.random() * 5) + "s";
+                container.appendChild(p);
+            }
+        }
+
+        window.onload = () => { renderizarCalendario(); actualizarEstadisticas(); renderizarNotas(); crearSakura(); };
+    </script>
 </body>
 </html>
