@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario & Calendario de Ánimo 🌸</title>
+    
+    <!-- Fuente Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Conexión con los estilos -->
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <!-- Contenedor para los pétalos cayendo -->
+    <div id="sakura-container"></div>
+
+    <div class="main-container">
+        
+        <!-- COLUMNA IZQUIERDA: CALENDARIO Y ESTADÍSTICAS -->
+        <div class="columna-izquierda">
+            
+            <!-- Calendario -->
+            <div class="calendario-card">
+                <div class="header">
+                    <h2 id="mes-nombre">Cargando...</h2>
+                    <div>
+                        <button class="btn-nav" onclick="cambiarMes(-1)">◀</button>
+                        <button class="btn-nav" onclick="cambiarMes(1)">▶</button>
+                    </div>
+                </div>
+
+                <div class="dias-semana">
+                    <div>Dom</div><div>Lun</div><div>Mar</div>
+                    <div>Mie</div><div>Jue</div><div>Vie</div><div>Sab</div>
+                </div>
+
+                <div id="calendario" class="grid-calendario"></div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-card">
+                <h3>Resumen Mensual 🌸</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-emoji">😊</span>
+                        <span id="count-bajo" class="stat-num">0</span>
+                        <span class="stat-label">Bien</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-emoji">😐</span>
+                        <span id="count-medio" class="stat-num">0</span>
+                        <span class="stat-label">Tenso</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-emoji">😟</span>
+                        <span id="count-alto" class="stat-num">0</span>
+                        <span class="stat-label">Estrés</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-emoji">😫</span>
+                        <span id="count-critico" class="stat-num">0</span>
+                        <span class="stat-label">Crítico</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: DIARIO (Aspecto de Libreta) -->
+        <div class="diario-card">
+            <h3>📓 Mi Diario Personal</h3>
+            
+            <div class="input-grupo">
+                <textarea id="nota-texto" placeholder="¿Cómo te sientes hoy? Escribe tus pensamientos aquí..."></textarea>
+            </div>
+            
+            <div style="text-align: right; margin-top: 10px;">
+                <button class="btn-nota" onclick="guardarNota()">Guardar Hoja</button>
+            </div>
+
+            <div id="contenedor-notas" class="notas-listado">
+                <!-- Aquí aparecen las notas -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL PARA ELEGIR EL ÁNIMO -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="fecha-label">Fecha</h3>
+            <p>¿Cómo estuvo tu día?</p>
+            
+            <select id="nivel-estres" style="width: 100%; padding: 10px; margin: 15px 0; border-radius: 8px;">
+                <option value="bajo">😊 Bien / Relajado</option>
+                <option value="medio">😐 Algo Tenso</option>
+                <option value="alto">😟 Estresado</option>
+                <option value="critico">😫 Crítico</option>
+            </select>
+            
+            <div>
+                <button class="btn-save" onclick="guardarEstado()">Guardar</button>
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conexión con la lógica -->
+    <script src="script.js"></script>
+
+</body>
+</html>
